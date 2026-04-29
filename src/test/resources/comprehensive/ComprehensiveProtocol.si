@@ -1,0 +1,61 @@
+enum MetricKind {
+  UNKNOWN,
+  TEMPERATURE,
+  SPEED,
+  LOAD,
+  PRESSURE
+}
+
+struct ScalarSample {
+  int code;
+  float f32;
+  double f64;
+  String label;
+}
+
+@hot
+struct MetricLeaf {
+  long id;
+  MetricKind kind;
+  float ratio;
+  double score;
+  String note;
+  List<Integer> tags;
+}
+
+@hot
+struct NestedBucket {
+  int bucketId;
+  ScalarSample sample;
+  MetricLeaf[] leafArray;
+  List<MetricLeaf> leafList;
+  Map<Integer, MetricLeaf> leafMap;
+  Map<Integer, List<Integer>> adjacency;
+}
+
+@hot
+struct ComprehensivePayload {
+  long requestId;
+  int version;
+  boolean ready;
+  float progress;
+  double threshold;
+  String traceId;
+  Optional<String> alias;
+  int[] counts;
+  ScalarSample mainSample;
+  ScalarSample[] sampleArray;
+  List<ScalarSample> sampleList;
+  List<MetricLeaf>[] leafBuckets;
+  Set<String>[] labelBuckets;
+  Map<Integer, NestedBucket>[] bucketArray;
+  List<Map<Integer, NestedBucket>> stagedBuckets;
+  Map<Integer, NestedBucket> largeBuckets;
+  NestedBucket primary;
+}
+
+client_to_server:
+  uploadComprehensive(ComprehensivePayload payload, int source, String region);
+
+server_to_client:
+  pushComprehensive(ComprehensivePayload payload, boolean accepted, String reason);

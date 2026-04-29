@@ -1,0 +1,46 @@
+syntax = "proto3";
+
+package zero.benchmark;
+
+option java_package = "com.zero.codegen.benchmark.proto";
+option java_outer_classname = "BenchmarkCrossFrameProto";
+
+enum CfStateProto {
+  IDLE = 0;
+  MATCHING = 1;
+  FIGHTING = 2;
+  SETTLING = 3;
+}
+
+message CfSkillProto {
+  int32 skill_id = 1;
+  int32 damage = 2;
+  bool critical = 3;
+  float ratio = 4;
+}
+
+message CfBuffProto {
+  int32 slot = 1;
+  int32 buff_id = 2;
+  int32 level = 3;
+  int64 expire_at = 4;
+  bool positive = 5;
+}
+
+message CrossFrameworkFrameProto {
+  int64 battle_id = 1;
+  int64 server_time = 2;
+  int32 frame_no = 3;
+  int32 room_id = 4;
+  int32 checksum = 5;
+  float actor_x = 6;
+  float actor_y = 7;
+  float actor_z = 8;
+  CfStateProto state = 9;
+  bool replay = 10;
+  string remark = 11;
+  repeated int32 changed_slots = 12;
+  bytes payload = 13;
+  repeated CfSkillProto casts = 14;
+  repeated CfBuffProto buffs = 15;
+}

@@ -1,0 +1,38 @@
+# 示例 1：默认值省略 / presence bits / Optional / 容器混合场景
+
+enum PresenceMode {
+  UNKNOWN,
+  ONLINE,
+  BUSY,
+  AWAY
+}
+
+struct FriendBrief {
+  long uid;
+  String nick;
+  int level;
+  boolean vip;
+}
+
+@hot
+struct PresencePayload {
+  long uid;
+  int worldId;
+  int roomId;
+  PresenceMode mode;
+  String nick;
+  boolean online;
+  int score;
+  int[] quickSlots;
+  List<Integer> achievements;
+  Set<String> flags;
+  Map<Integer,FriendBrief> friends;
+  FriendBrief self;
+  Optional<String> title;
+}
+
+client_to_server:
+  updatePresence(PresencePayload payload, int seq);
+
+server_to_client:
+  updatePresenceAck(int seq, boolean ok, String reason);

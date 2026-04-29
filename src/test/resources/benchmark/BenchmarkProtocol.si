@@ -1,0 +1,142 @@
+enum MetricKind {
+  UNKNOWN,
+  TEMPERATURE,
+  SPEED,
+  LOAD,
+  PRESSURE
+}
+
+enum CfState {
+  IDLE,
+  MATCHING,
+  FIGHTING,
+  SETTLING
+}
+
+struct CfSkill {
+  int skillId;
+  int damage;
+  boolean critical;
+  float ratio;
+}
+
+struct CfBuff {
+  int slot;
+  int buffId;
+  int level;
+  long expireAt;
+  boolean positive;
+}
+
+@hot
+struct CrossFrameworkFrame {
+  long battleId;
+  long serverTime;
+  int frameNo;
+  int roomId;
+  int checksum;
+  float actorX;
+  float actorY;
+  float actorZ;
+  CfState state;
+  boolean replay;
+  String remark;
+  int[] changedSlots;
+  byte[] payload;
+  List<CfSkill> casts;
+  List<CfBuff> buffs;
+}
+
+@fixed
+@inline
+struct FixedPoint {
+  int x;
+  long y;
+  float z;
+  double score;
+}
+
+@fixed
+struct FixedTelemetry {
+  int id;
+  long time;
+  float ratio;
+  double score;
+  FixedPoint point;
+}
+
+struct ScalarSample {
+  int code;
+  float f32;
+  double f64;
+  String label;
+}
+
+@hot
+struct MetricLeaf {
+  long id;
+  MetricKind kind;
+  float ratio;
+  double score;
+  String note;
+  List<Integer> tags;
+}
+
+@hot
+struct NestedBucket {
+  int bucketId;
+  ScalarSample sample;
+  MetricLeaf[] leafArray;
+  List<MetricLeaf> leafList;
+  Map<Integer,MetricLeaf> leafMap;
+  Map<Integer,List<Integer>> adjacency;
+}
+
+@hot
+struct PackedCollections {
+  long uid;
+  @packed List<Integer> values;
+  @packed List<Long> ids;
+  @packed Map<Integer,Integer> scores;
+  @packed Map<Integer,Long> versions;
+}
+
+@hot
+struct ByteBlob {
+  long uid;
+  byte[] raw;
+  int[] samples;
+  long[] ticks;
+  float[] ratios;
+  double[] scores;
+}
+
+@hot
+struct BenchmarkPayload {
+  long requestId;
+  int version;
+  boolean ready;
+  float progress;
+  double threshold;
+  String traceId;
+  Optional<String> alias;
+  int[] counts;
+  ByteBlob blob;
+  ScalarSample mainSample;
+  ScalarSample[] sampleArray;
+  List<ScalarSample> sampleList;
+  List<MetricLeaf>[] leafBuckets;
+  Set<String>[] labelBuckets;
+  Map<Integer,NestedBucket>[] bucketArray;
+  List<Map<Integer,NestedBucket>> stagedBuckets;
+  Map<Integer,NestedBucket> largeBuckets;
+  PackedCollections packed;
+  FixedTelemetry telemetry;
+  NestedBucket primary;
+}
+
+client_to_server:
+  uploadBenchmark(BenchmarkPayload payload, int source, String traceId);
+
+server_to_client:
+  pushBenchmark(BenchmarkPayload payload, boolean accepted, String reason);

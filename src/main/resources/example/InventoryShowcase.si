@@ -1,0 +1,39 @@
+# 示例 3：背包同步，覆盖 Set / Map / Optional / 嵌套 List
+
+enum ItemRarity {
+  COMMON,
+  RARE,
+  EPIC,
+  LEGENDARY
+}
+
+struct StatPair {
+  int statId;
+  int value;
+}
+
+@hot
+struct ItemView {
+  long itemUid;
+  int itemId;
+  ItemRarity rarity;
+  int count;
+  List<StatPair> stats;
+  Map<Integer,Integer> ext;
+}
+
+@hot
+struct InventorySnapshot {
+  long uid;
+  List<ItemView> bag;
+  Map<Integer,ItemView> equipped;
+  Set<Integer> changedSlots;
+  String traceId;
+  Optional<Integer> version;
+}
+
+client_to_server:
+  syncInventory(InventorySnapshot snapshot, String source);
+
+server_to_client:
+  syncInventoryResult(boolean success, InventorySnapshot snapshot, String reason);

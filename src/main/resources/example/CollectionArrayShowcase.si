@@ -1,0 +1,22 @@
+# 示例 4：集合类型数组，覆盖 List[] / Set[] / Map[] / Queue[]
+
+struct RoomBucket {
+  int roomId;
+  String note;
+}
+
+@hot
+struct CollectionArrayPayload {
+  long uid;
+  List<Integer>[] shards;
+  Set<String>[] tagBuckets;
+  Map<Integer,RoomBucket>[] roomBuckets;
+  Queue<Integer>[] replayQueues;
+  String traceId;
+}
+
+client_to_server:
+  syncCollectionArrays(CollectionArrayPayload payload);
+
+server_to_client:
+  syncCollectionArraysAck(CollectionArrayPayload payload, boolean ok);

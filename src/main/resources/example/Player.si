@@ -1,0 +1,27 @@
+# 最小可运行示例：基础类型、enum、List、Map 和嵌套 struct
+
+enum PlayerRole {
+  UNKNOWN,
+  WARRIOR,
+  MAGE,
+  SUPPORT
+}
+
+struct PlayerInfo {
+  long uid;
+  String name;
+  int level;
+  PlayerRole role;
+}
+
+struct Player {
+  PlayerInfo base;
+  List<Integer> itemIds;
+  Map<String,Integer> counters;
+}
+
+client_to_server:
+  queryPlayer(long uid, String traceId);
+
+server_to_client:
+  queryPlayerResult(Player player);

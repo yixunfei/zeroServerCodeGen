@@ -1,0 +1,16 @@
+target/
+generated-src/
+generated-cs/
+cs-src/
+temp/
+zero-protocol/
+
+.idea/
+.settings/
+.classpath
+.project
+
+*.log
+*.dump
+*.dumpstream
+

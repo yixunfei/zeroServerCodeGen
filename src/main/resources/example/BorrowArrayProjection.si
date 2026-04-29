@@ -1,0 +1,17 @@
+# 示例 2：borrow primitive array view
+
+@hot
+struct BorrowArrayProjectionPayload {
+  long uid;
+  @borrow int[] intValues;
+  @borrow long[] longValues;
+  @borrow float[] floatValues;
+  @borrow double[] doubleValues;
+  int checksum;
+}
+
+client_to_server:
+  uploadBorrowArrayProjection(BorrowArrayProjectionPayload payload);
+
+server_to_client:
+  pushBorrowArrayProjection(BorrowArrayProjectionPayload payload);
